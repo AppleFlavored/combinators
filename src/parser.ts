@@ -22,8 +22,8 @@ export function or<Input, Output>(...parsers: Parser<Input, Output>[]) {
     }
 }
 
-export function optional(parser: Parser<any, any>) {
-    return (input: string) => {
+export function optional<Input, Output>(parser: Parser<Input, Output>) {
+    return (input: Input) => {
         const result = parser(input);
         if (result.success) {
             return result;
@@ -58,8 +58,8 @@ export function many1<Input, Output>(parser: Parser<Input, Output>) {
     }
 }
 
-export function sequence(...parsers: Parser<any, any>[]) {
-    return (input: string) => {
+export function sequence<Input>(...parsers: Parser<Input, any>[]) {
+    return (input: Input) => {
         const initialInput = input;
         const values: any[] = [];
         for (const parser of parsers) {

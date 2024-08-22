@@ -1,0 +1,12 @@
+{
+    "name": "combinators",
+    "version": "0.1.0",
+    "main": "out/index.js",
+    "scripts": {
+        "start": "tsc -p . && node ."
+    },
+    "devDependencies": {
+        "@types/node": "^22.5.0",
+        "typescript": "^5.5.4"
+    }
+}

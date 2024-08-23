@@ -1,4 +1,4 @@
-import { failure, Parser, success } from "./parser";
+import { failure, or, Parser, success } from "./parser";
 
 export function literal(expected: string): Parser<string, string> {
     return (input) => {
@@ -35,6 +35,16 @@ export function digit(): Parser<string, string> {
     }
 }
 
+export function hexDigit(): Parser<string, string> {
+    return or(digit(), (input) => {
+        const firstChar = input.charAt(0);
+        if (firstChar >= 'a' && firstChar <= 'f' || firstChar >= 'A' && firstChar <= 'F') {
+            return success(firstChar, input.substring(1));
+        }
+        return failure(input);
+    });
+}
+
 export function whitespace(): Parser<string, string> {
-    return literal(' ');
+    return or(literal(' '), literal('\t'), literal('\n'), literal('\r'));
 }

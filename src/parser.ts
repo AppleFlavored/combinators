@@ -58,6 +58,35 @@ export function many1<Input, Output>(parser: Parser<Input, Output>) {
     }
 }
 
+export function separated<Input, Output, TSeparator>(separator: Parser<Input, TSeparator>, parser: Parser<Input, Output>) {
+    return (input: Input) => {
+        const values: Output[] = [];
+
+        let result = parser(input);
+        if (!result.success) {
+            return failure(input);
+        }
+        values.push(result.value);
+
+        while (true) {
+            const remaining = result.rest;
+            const sep = separator(remaining);
+            if (!sep.success) {
+                break;
+            }
+
+            result = parser(sep.rest);
+            if (!result.success) {
+                return success(values, remaining);
+            }
+
+            values.push(result.value);
+        }
+
+        return success(values, result.rest);
+    }
+}
+
 export function sequence<Input>(...parsers: Parser<Input, any>[]) {
     return (input: Input) => {
         const initialInput = input;
@@ -74,10 +103,12 @@ export function sequence<Input>(...parsers: Parser<Input, any>[]) {
     }
 }
 
-export function map<Input, Output, TValue>(parser: Parser<Input, Output>, fn: (value: Output) => TValue) {
+export function map<Input, Output, TValue>(parser: Parser<Input, Output>, fn: (value: Output) => TValue): Parser<Input, TValue> {
     return (input: Input) => {
         const result = parser(input);
-        if (!result.success) return result;
+        if (!result.success) {
+            return failure(input);
+        }
         return success(fn(result.value), result.rest);
     }
 }

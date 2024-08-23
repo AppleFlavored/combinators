@@ -10,6 +10,10 @@ export function failure<Input>(rest: Input): Failure<Input> {
     return { success: false, rest };
 }
 
+export function lazy<Input, Output>(fn: () => Parser<Input, Output>) {
+    return (input: Input) => fn()(input);
+}
+
 export function or<Input, Output>(...parsers: Parser<Input, Output>[]) {
     return (input: Input) => {
         for (const parser of parsers) {

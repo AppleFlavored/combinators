@@ -1,13 +1,4 @@
-import { many1, map, sequence } from "./parser";
-import { letter, literal, whitespace } from "./text";
+import { json } from "./json";
 
-const result = map(
-    sequence(
-        literal('fn'),
-        many1(whitespace()),
-        map(many1(letter()), (letters) => letters.join('')),
-    ),
-    ([_, __, name]) => `FUNCTION ${name}`,
-)('fn main');
-
+const result = json(`{ "a": ["b", "c", { "d": true, "f": 2320.23 }], "g": null, "h": "Hello" }`);
 console.log(result);
